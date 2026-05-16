@@ -25,6 +25,19 @@ If you've noticed a bug or have a feature request, [open an issue](https://githu
 - **Test**: `dotnet test WinHome.sln`
 - **Linux/macOS**: See the [Cross-Platform Development Guide](./docs/cross-platform-dev.md) for details on using our mock-based testing suite.
 
+## 🗺️ Codebase Map
+Understanding the directory structure:
+- **`src/`**: The core application source code.
+  - **`Engine.cs`**: The main reconciliation engine.
+  - **`Services/`**: Business logic for Windows, WSL, Registry, and Package Managers.
+  - **`Models/`**: C# classes representing `config.yaml` structures.
+  - **`Infrastructure/`**: CLI parsing and application host logic.
+- **`tests/`**: Unit and integration tests.
+  - **`WinHome.Tests/`**: The main xUnit test suite.
+- **`plugins/`**: Source code for built-in Python and JavaScript plugins.
+- **`docs/`**: Documentation files and module guides.
+- **`.github/`**: Workflows, issue templates, and pull request templates.
+
 ## 📜 Code Style & Standards
 
 ### Formatting
