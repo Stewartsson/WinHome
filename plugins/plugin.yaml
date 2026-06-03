@@ -1,0 +1,7 @@
+name: rustup
+version: 1.0.0
+type: config_provider
+main: src/plugin.py
+capabilities:
+  - check_installed
+  - manage_settings

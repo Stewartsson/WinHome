@@ -26,28 +26,32 @@ def process_request():
     raw_input = sys.stdin.read().strip()
     if not raw_input:
         print(json.dumps({
-            "requestId": str(uuid.uuid4()),
+            "requestId": "unknown",
+            "changed": False,
             "data": {},
             "error": "Empty stdin configuration request received"
         }))
-        sys.exit(1)
+        return
 
     try:
         request_payload = json.loads(raw_input)
     except json.JSONDecodeError:
         print(json.dumps({
-            "requestId": str(uuid.uuid4()),
+            "requestId": "unknown",
+            "changed": False,
             "data": {},
             "error": "Invalid JSON formatting in configuration payload"
         }))
-        sys.exit(1)
+        return
 
-    request_id = request_payload.get("requestId", str(uuid.uuid4()))
-    args = request_payload.get("data", {}).get("args", {})
+    request_id = request_payload.get("requestId", "unknown")
+    command = request_payload.get("command", "")
+    args = request_payload.get("args", {})
     
-    if args.get("check_installed", False):
+    if command == "check_installed":
         print(json.dumps({
             "requestId": request_id,
+            "changed": False,
             "data": check_installed()
         }))
         return
@@ -56,7 +60,7 @@ def process_request():
     config_path = os.path.join(home_dir, ".rustup", "settings.toml")
     
     new_settings = args.get("settings", {})
-    dry_run = args.get("dry_run", False)
+    dry_run = args.get("dryRun", False)
 
     existing_config = {}
     if os.path.exists(config_path):
@@ -91,6 +95,7 @@ def process_request():
     if dry_run:
         print(json.dumps({
             "requestId": request_id,
+            "changed": False,
             "data": {"status": "dry_run", "updated": True}
         }))
         return
@@ -98,19 +103,21 @@ def process_request():
     try:
         os.makedirs(os.path.dirname(config_path), exist_ok=True)
         fd, temp_path = tempfile.mkstemp(dir=os.path.dirname(config_path))
-        with os.close(fd), open(temp_path, "w", encoding="utf-8") as tmp_file:
+        with os.fdopen(fd, "w", encoding="utf-8") as tmp_file:
             tmp_file.write(final_toml_content)
         os.replace(temp_path, config_path)
     except Exception as err:
         print(json.dumps({
             "requestId": request_id,
+            "changed": False,
             "data": {},
             "error": f"Failed executing atomic write operations: {str(err)}"
         }))
-        sys.exit(1)
+        return
 
     print(json.dumps({
         "requestId": request_id,
+        "changed": True,
         "data": {"status": "success", "written": True}
     }))
 
