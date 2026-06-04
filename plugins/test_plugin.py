@@ -1,14 +1,17 @@
 import unittest
-from src.plugin import check_installed, deep_merge
+import sys
+import os
+
+# Adjust path to find src folder
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '../src')))
+from plugin import check_installed, deep_merge
 
 class TestRustupPlugin(unittest.TestCase):
     def test_check_installed_returns_bool(self):
-        # Verify the installation detector outputs a clean boolean data type
         result = check_installed()
         self.assertIn(result, [True, False])
 
     def test_deep_merge_logic(self):
-        # Validate that dict components merge without losing unknown properties
         src = {"settings": {"profile": "minimal"}}
         dest = {"settings": {"default_toolchain": "stable"}, "custom_key": 123}
         merged = deep_merge(src, dest)
