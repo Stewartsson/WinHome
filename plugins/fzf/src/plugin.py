@@ -1,15 +1,21 @@
 import json
 import os
-import shutil
 import shlex
+import shutil
 import sys
 import tempfile
 import uuid
 from pathlib import Path
 from typing import Any, Dict, Tuple
 
-
-SUPPORTED_OPTION_SETTINGS = {"height", "border", "preview", "color", "bind", "layout"}
+SUPPORTED_OPTION_SETTINGS = {
+    "height",
+    "border",
+    "preview",
+    "color",
+    "bind",
+    "layout",
+}
 
 
 def log(msg: str) -> None:
@@ -95,7 +101,7 @@ def parse_shell_value(raw_value: str) -> str:
     escaped = False
     for index, char in enumerate(raw_value[1:], start=1):
         if escaped:
-            if char in {'\\', '"', "$", "`"}:
+            if char in {"\\", '"', "$", "`"}:
                 value.append(char)
             else:
                 value.append("\\")
@@ -139,12 +145,7 @@ def read_fzfrc(file_path: str) -> Tuple[Dict[str, str], bool]:
 def shell_quote(value: str) -> str:
     if "\n" in value or "\r" in value:
         raise ValueError("fzf config values cannot contain newlines")
-    escaped = (
-        value.replace("\\", "\\\\")
-        .replace('"', '\\"')
-        .replace("$", "\\$")
-        .replace("`", "\\`")
-    )
+    escaped = value.replace("\\", "\\\\").replace('"', '\\"').replace("$", "\\$").replace("`", "\\`")
     return f'"{escaped}"'
 
 
@@ -288,7 +289,16 @@ def main() -> None:
     except Exception as exc:
         log(f"Failed to parse request: {exc}")
         sys.stdout.write(
-            json.dumps(response("unknown", False, False, {}, f"Failed to parse request: {exc}")) + "\n"
+            json.dumps(
+                response(
+                    "unknown",
+                    False,
+                    False,
+                    {},
+                    f"Failed to parse request: {exc}",
+                )
+            )
+            + "\n"
         )
         sys.stdout.flush()
         return
