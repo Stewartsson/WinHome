@@ -4,6 +4,7 @@ import json
 import sys
 import uuid
 import tempfile
+import copy
 
 try:
     import tomllib
@@ -14,13 +15,18 @@ def check_installed():
     return shutil.which("rustup") is not None or shutil.which("rustup.exe") is not None
 
 def deep_merge(source, destination):
+    """Deep merges source into destination and tracks if any changes were made."""
+    has_changed = False
     for key, value in source.items():
         if isinstance(value, dict):
             node = destination.setdefault(key, {})
-            deep_merge(value, node)
+            if deep_merge(value, node):
+                has_changed = True
         else:
-            destination[key] = value
-    return destination
+            if key not in destination or destination[key] != value:
+                destination[key] = value
+                has_changed = True
+    return has_changed
 
 def process_request():
     raw_input = sys.stdin.read().strip()
@@ -72,12 +78,14 @@ def process_request():
             except IOError:
                 pass
 
-    merged_config = deep_merge(new_settings, existing_config)
+    # Deep copy to check changes cleanly without destroying original configurations
+    config_working_copy = copy.deepcopy(existing_config)
+    something_changed = deep_merge(new_settings, config_working_copy)
 
     output_lines = []
-    overrides = merged_config.pop("overrides", {})
+    overrides = config_working_copy.pop("overrides", {})
     
-    for k, v in merged_config.items():
+    for k, v in config_working_copy.items():
         if isinstance(v, str):
             output_lines.append(f'{k} = "{v}"')
         else:
@@ -93,28 +101,27 @@ def process_request():
     if dry_run:
         print(json.dumps({
             "requestId": request_id,
-            "installed": check_installed(),
-            "changed": True
+            "changed": something_changed
         }))
         return
 
-    try:
-        os.makedirs(os.path.dirname(config_path), exist_ok=True)
-        fd, temp_path = tempfile.mkstemp(dir=os.path.dirname(config_path))
-        with os.fdopen(fd, "w", encoding="utf-8") as tmp_file:
-            tmp_file.write(final_toml_content)
-        os.replace(temp_path, config_path)
-    except Exception as err:
-        print(json.dumps({
-            "requestId": request_id,
-            "error": f"Failed executing atomic write operations: {str(err)}"
-        }))
-        return
+    if something_changed:
+        try:
+            os.makedirs(os.path.dirname(config_path), exist_ok=True)
+            fd, temp_path = tempfile.mkstemp(dir=os.path.dirname(config_path))
+            with os.fdopen(fd, "w", encoding="utf-8") as tmp_file:
+                tmp_file.write(final_toml_content)
+            os.replace(temp_path, config_path)
+        except Exception as err:
+            print(json.dumps({
+                "requestId": request_id,
+                "error": f"Failed executing atomic write operations: {str(err)}"
+            }))
+            return
 
     print(json.dumps({
         "requestId": request_id,
-        "installed": check_installed(),
-        "changed": True
+        "changed": something_changed
     }))
 
 if __name__ == "__main__":
