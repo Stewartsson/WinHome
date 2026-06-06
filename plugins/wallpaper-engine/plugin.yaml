@@ -1,0 +1,9 @@
+name: "wallpaper-engine"
+version: "1.0.0"
+type: "config_provider"
+description: "Manages desktop audio volume, playback states, FPS filters, and battery performance configurations for Steam Wallpaper Engine."
+author: "Stewartsson"
+entrypoint: "src/plugin.py"
+requirements:
+  language: "python"
+  version: ">=3.8"
