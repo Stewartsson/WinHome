@@ -1,9 +1,13 @@
 # Stage 1: Build & Cross-Compile the Windows-Native binary on a Linux host
-FROM mcr.microsoft.com/dotnet/sdk:10.0 AS build
+FROM ://microsoft.com AS build
 WORKDIR /src
-COPY WinHome.sln .
-COPY src/ src/
+
+# Cache optimization: Copy project file and restore dependencies first
+COPY src/WinHome.csproj src/
 RUN dotnet restore src/WinHome.csproj
+
+# Copy remaining source code and publish
+COPY src/ src/
 RUN dotnet publish -c Release --no-restore -o /app -r win-x64 --self-contained true
 
 # Stage 2: Artifact Export Layer
