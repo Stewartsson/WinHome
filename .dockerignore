@@ -19,3 +19,11 @@ node_modules/
 *.exe
 *.pdb
 *.nupkg
+coverage/
+files/
+TestResults/
+config.yaml
+winhome.state.json
+*.snk
+*.trx
+*.cache
