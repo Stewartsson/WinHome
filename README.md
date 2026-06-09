@@ -69,7 +69,7 @@ WinHome ships as a **self-contained single EXE** (no .NET runtime needed), compa
 ### Method 2: Quick Install (PowerShell One-Liner)
 
 ```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -Command "iex (iwr -useb [https://githubusercontent.com](https://githubusercontent.com))"
+powershell -NoProfile -ExecutionPolicy Bypass -Command "Invoke-WebRequest -Uri '[https://github.com/DotDev262/WinHome/releases/latest/download/WinHome.exe](https://github.com/DotDev262/WinHome/releases/latest/download/WinHome.exe)' -OutFile 'WinHome.exe'"
 
 Method 3: winget (coming soon)
 Once WinHome is published to the Windows Package Manager repository, you will be able to install it with:
@@ -78,17 +78,14 @@ winget install DotDev262.WinHome
 
 Method 4: Scoop (coming soon)
 Once the Scoop bucket is published:
-
 # Coming soon — pending Scoop bucket submission
 scoop bucket add winhome [https://github.com/DotDev262/scoop-winhome](https://github.com/DotDev262/scoop-winhome)
 scoop install winhome
 
 Method 5: Chocolatey (coming soon)
 Once the Chocolatey package is published:
-
 # Coming soon — pending Chocolatey package approval
 choco install winhome
-
 Post-Install Note: For easier global access, we recommend moving WinHome.exe to a folder included in your system's PATH environment variable (e.g., C:\Users\<User>\bin).
 
 🔧 How It Works & Configuration Wiki
@@ -127,6 +124,7 @@ Kernel settings and version management
 ⚙️ System Configuration
 🛡️ Safe Dry-Run Mode
 🔄 Deterministic Idempotency
+
 🛡️ Security & Reliability
 WinHome implements enterprise-grade security controls to prevent common infrastructure automation pitfalls.
 
@@ -168,6 +166,7 @@ Core Features & System Integration
 [ ] Windows Container Support: Add features for provisioning and managing Windows containers.
 
 [ ] Hyper-V VM Provisioning: Introduce capabilities for managing local Hyper-V virtual machines.
+
 
 Developer Experience (DevEx) & Tooling
 [x] ~~State diff viewer (--diff)~~
@@ -312,6 +311,7 @@ CI/CD via GitHub Actions (SingleFile & Native builds)
 
 📘 Usage
 .\WinHome.exe [options]
+
 Options
 --config <path>
 
@@ -402,8 +402,6 @@ Ensure the App Installer is updated from the Microsoft Store. WinHome attempts t
 PowerShell Script Errors
 
 If you encounter execution policy errors, try running Set-ExecutionPolicy RemoteSigned -Scope CurrentUser in an administrative PowerShell window.
-
-.
 
 🤝 Contributing
 Contributions, discussions, and feature ideas are welcome! WinHome is an open-source project and we'd love your help to make it better.
