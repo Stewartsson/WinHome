@@ -426,3 +426,11 @@ Deep-merges settings into `%APPDATA%\discord\settings.json`.
 Config key: `extensions.test-powershell`
 
 Example plugin used by the test suite to validate both `config_provider` and `package_manager` behavior. It is useful as a reference implementation, not as an end-user integration. See [full docs](test-powershell.md).
+
+* [Pip](./pip.md) - Python package management plugin integration specs.
+* [Npm](./npm.md) - Node.js package management plugin integration specs.
+* [Cargo](./cargo.md) - Rust ecosystem crate manager plugin integration specs.
+* [Winget](./winget.md) - Native Windows Package Manager utility integration specs.
+* [Chocolatey](./chocolatey.md) - Windows machine automation package manager integration specs.
+* [Scoop](./scoop.md) - Command-line installer provisioning framework specs.
+
