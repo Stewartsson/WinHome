@@ -20,18 +20,18 @@ It can:
 
 ## Configuration Schema
 
-| Field | Type | Default | Description |
-|---------|---------|---------|---------|
-| settings | object | none | VS Code settings written to settings.json |
-| extensions | array | none | List of VS Code extension IDs to install |
-| profiles | object | none | Named VS Code profiles and their configurations |
+| Field      | Type   | Default | Description                                     |
+| ---------- | ------ | ------- | ----------------------------------------------- |
+| settings   | object | none    | VS Code settings written to settings.json       |
+| extensions | array  | none    | List of VS Code extension IDs to install        |
+| profiles   | object | none    | Named VS Code profiles and their configurations |
 
 ### Settings Example
 
 ```yaml
 settings:
   editor.fontSize: 16
-  editor.wordWrap: "on"
+  editor.wordWrap: 'on'
 ```
 
 ### Extensions Example
@@ -69,7 +69,7 @@ profiles:
 
     settings:
       editor.fontSize: 16
-      editor.wordWrap: "on"
+      editor.wordWrap: 'on'
 ```
 
 ## Verification Steps
