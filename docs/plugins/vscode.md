@@ -89,4 +89,3 @@ profiles:
 - Named profiles are automatically created if they do not already exist.
 - Settings are merged with existing settings.json values.
 - Extension names should be valid VS Code extension IDs.
-

@@ -541,4 +541,4 @@ Always write tests for at least these five cases:
 | Real Python example | `plugins/obsidian/` |
 | Real TypeScript example | `plugins/vscode/` |
 
-You're ready to build. 
+You're ready to build.

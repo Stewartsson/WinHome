@@ -102,9 +102,9 @@ def main():
     raw_input = sys.stdin.read()
     if not raw_input: return
     request = json.loads(raw_input)
-    
+
     cmd = request.get("command")
-    
+
     response = {
         "requestId": request.get("requestId"),
         "success": True,
@@ -115,7 +115,7 @@ def main():
         # Do logic...
         response["changed"] = True
         sys.stderr.write("Installing package...\n")
-    
+
     print(json.dumps(response))
 
 if __name__ == "__main__":

@@ -57,7 +57,7 @@ Our GitHub Actions pipeline utilizes **Windows Server Core** containers to run i
 ### Dockerfile Strategy
 - **Location**: `testing/infrastructure/Dockerfile`.
 - **Base Image**: `mcr.microsoft.com/windows/servercore:ltsc2022`.
-- **Optimizations**: 
+- **Optimizations**:
     - Layer caching for `.csproj` restores.
     - Pester module pre-installed.
     - Full plugin source code and runtimes included.

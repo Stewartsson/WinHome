@@ -26,4 +26,3 @@ scheduled_tasks:
       - type: "exec"
         path: "C:\\path\\to\\my\\script.bat"
 ```
-

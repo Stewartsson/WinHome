@@ -135,7 +135,7 @@ public class ProcessPluginRunner : IPlugin
         // Read Response
         string output = await process.StandardOutput.ReadToEndAsync();
         string error = await process.StandardError.ReadToEndAsync();
-        
+
         await process.WaitForExitAsync();
 
         if (process.ExitCode != 0)
@@ -143,7 +143,7 @@ public class ProcessPluginRunner : IPlugin
             return new PluginResult(false, false, $"Plugin crashed: {error}", null);
         }
 
-        try 
+        try
         {
             return JsonSerializer.Deserialize<PluginResult>(output);
         }
@@ -167,7 +167,7 @@ def main():
     # 1. Read Input
     raw_input = sys.stdin.read()
     request = json.loads(raw_input)
-    
+
     cmd = request.get("command")
     config = request.get("config", {})
     dry_run = request.get("dryRun", False)
@@ -184,7 +184,7 @@ def main():
     if cmd == "apply":
         # Log to Stderr (Host will capture this)
         sys.stderr.write(f"Processing config: {config}\n")
-        
+
         if not dry_run:
             # Perform action...
             response["changed"] = True

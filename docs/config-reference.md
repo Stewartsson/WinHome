@@ -109,7 +109,7 @@ Install applications using supported managers (`winget`, `scoop`, `choco`) or in
 apps:
   - id: "Microsoft.VisualStudioCode"
     manager: "winget"
-  
+
   # Using a plugin
   - id: "tpope/vim-fugitive"
     manager: "vim"

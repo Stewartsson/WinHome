@@ -18,4 +18,3 @@ registry:
     value: 0
     type: dword
 ```
-
