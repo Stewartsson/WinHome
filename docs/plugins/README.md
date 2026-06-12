@@ -22,11 +22,11 @@ WinHome currently ships with 36 built-in plugins under `plugins/`. This page act
 
 | Name | Brief description | Capabilities | Docs |
 | --- | --- | --- | --- |
-| `[Scoop](./scoop.md)` | Command-line Installer Provisioning Framework. | Package Manager | [Details](./scoop.md) |
-| `[Miniconda](./miniconda.md)` | Python/R Package and Environment Manager. | Package Manager | [Details](./miniconda.md) |
-| `[Sdkman](./sdkman.md)` | Software Development Kit Manager for Java Ecosystem. | Package Manager | [Details](./sdkman.md) |
-| `[7-Zip](./7-zip.md)` | High-Ratio File Archiver and Compression Tool. | App | [Details](./7-zip.md) |
-| `[Syncthing](./syncthing.md)` | Continuous File Synchronization Framework. | App | [Details](./syncthing.md) |
+| [Scoop](#scoop) | Command-line Installer Provisioning Framework | package_manager | [Details](#scoop) |
+| [Miniconda](#miniconda) | Python/R Package and Environment Manager | package_manager | [Details](#miniconda) |
+| [Sdkman](#sdkman) | Software Development Kit Manager for Java Ecosystem | package_manager | [Details](#sdkman) |
+| [7-Zip](#7-zip) | High-Ratio File Archiver and Compression Tool | - | [Details](#7-zip) |
+| [Syncthing](#syncthing) | Continuous File Synchronization Framework | - | [Details](#syncthing) |
 
 ### Editors And Knowledge Tools
 
