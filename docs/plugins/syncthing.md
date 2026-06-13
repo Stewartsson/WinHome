@@ -1,10 +1,12 @@
 # 🔄 Syncthing Plugin
 
 ## 📋 Overview
+
 The Syncthing plugin deploys a decentralized, peer-to-peer decentralized file synchronization engine across node networks.
 
 ## 🛠️ Prerequisites
-* Authorized localized local storage write permissions active
+
+- Authorized localized local storage write permissions active
 
 ## 🗄️ Configuration Schema
 
@@ -14,6 +16,7 @@ The Syncthing plugin deploys a decentralized, peer-to-peer decentralized file sy
 | `folders` | `List` | Local path strings to monitor and broadcast | No |
 
 ## 💻 Usage Examples
+
 ```yaml
 plugins:
   syncthing:
@@ -23,9 +26,11 @@ plugins:
 ```
 
 ## 🔍 Verification Steps
+
 ```bash
 syncthing --version
 ```
 
 ## ⚠️ Notes & Caveats
-* Requires network port exposure mapping clearance definitions.
+
+- Requires network port exposure mapping clearance definitions.
