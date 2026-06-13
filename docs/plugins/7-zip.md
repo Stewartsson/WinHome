@@ -1,10 +1,12 @@
 # 📦 7-Zip Plugin
 
 ## 📋 Overview
+
 The 7-Zip plugin provides high-ratio archive decompression and packing routines natively accessible across system automation hooks.
 
 ## 🛠️ Prerequisites
-* Valid destination platform storage blocks active
+
+- Valid destination platform storage blocks active
 
 ## 🗄️ Configuration Schema
 
@@ -13,6 +15,7 @@ The 7-Zip plugin provides high-ratio archive decompression and packing routines 
 | `install_path` | `String` | Target platform deployment folder location | Yes |
 
 ## 💻 Usage Examples
+
 ```yaml
 plugins:
   7-zip:
@@ -20,9 +23,11 @@ plugins:
 ```
 
 ## 🔍 Verification Steps
+
 ```powershell
 7z --help
 ```
 
 ## ⚠️ Notes & Caveats
-* Ensure execution path mappings are registered inside your user environments.
+
+- Ensure execution path mappings are registered inside your user environments.
