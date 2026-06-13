@@ -1,10 +1,12 @@
 # 🐍 Miniconda Plugin
 
 ## 📋 Overview
+
 The Miniconda plugin automates the provisioning of light-weight conda package, dependency, and environment management systems across active terminal workflows.
 
 ## 🛠️ Prerequisites
-* Python baseline environment dependencies configured
+
+- Python baseline environment dependencies configured
 
 ## 🗄️ Configuration Schema
 
@@ -14,6 +16,7 @@ The Miniconda plugin automates the provisioning of light-weight conda package, d
 | `channels` | `List` | External environment search channels | No |
 
 ## 💻 Usage Examples
+
 ```yaml
 plugins:
   miniconda:
@@ -25,9 +28,11 @@ plugins:
 ```
 
 ## 🔍 Verification Steps
+
 ```bash
 conda env list
 ```
 
 ## ⚠️ Notes & Caveats
-* Relies on standard network connections to download target wheel distributions.
+
+- Relies on standard network connections to download target wheel distributions.
