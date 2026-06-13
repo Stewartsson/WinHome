@@ -25,9 +25,9 @@ marketplace-style index for those plugins and a quick reference for how each one
 | `winget`     | Manages Winget CLI `settings.json`, separate from package installation. | `config_provider` | [Details](#winget)        |
 | `Scoop`      | Command-line Installer Provisioning Framework                           | `config_provider` | [Details](./scoop.md)     |
 | `Miniconda`  | Python/R Package and Environment Manager                                | `config_provider` | [Details](./miniconda.md) |
-| `Sdkman`     | Software Development Kit Manager for Java Ecosystem                     | `package_manager` | [Details](./sdkman.md)    |
-| `7-Zip`      | High-Ratio File Archiver and Compression Tool                           | `package_manager` | [Details](./7-zip.md)     |
-| `Syncthing`  | Continuous File Synchronization Framework                               | `package_manager` | [Details](./syncthing.md) |
+| `Sdkman`     | Software Development Kit Manager for Java Ecosystem                     | `config_provider` | [Details](./sdkman.md)    |
+| `7-Zip`      | High-Ratio File Archiver and Compression Tool                           | `config_provider` | [Details](./7-zip.md)     |
+| `Syncthing`  | Continuous File Synchronization Framework                               | `config_provider` | [Details](./syncthing.md) |
 
 
 ### Editors And Knowledge Tools
