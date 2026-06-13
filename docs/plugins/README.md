@@ -20,15 +20,14 @@ marketplace-style index for those plugins and a quick reference for how each one
 | ------------ | ----------------------------------------------------------------------- | ----------------- | ------------------------- |
 | `cargo`      | Manages Cargo settings in `.cargo/config.toml`.                         | `config_provider` | [Details](#cargo)         |
 | `chocolatey` | Manages Chocolatey client configuration and feature flags.              | `config_provider` | [Details](#chocolatey)    |
+| `miniconda`  | Python/R Package and Environment Manager                                | `config_provider` | [Details](./miniconda.md) |
 | `npm`        | Manages user-level `.npmrc` settings.                                   | `config_provider` | [Details](#npm)           |
 | `pip`        | Manages `pip.ini` settings for Python package installs.                 | `config_provider` | [Details](#pip)           |
+| `scoop`      | Command-line Installer Provisioning Framework                           | `config_provider` | [Details](./scoop.md)     |
+| `sdkman`     | Software Development Kit Manager for Java Ecosystem                     | `config_provider` | [Details](./sdkman.md)    |
+| `syncthing`  | Continuous File Synchronization Framework                               | `config_provider` | [Details](./syncthing.md) |
 | `winget`     | Manages Winget CLI `settings.json`, separate from package installation. | `config_provider` | [Details](#winget)        |
-| `Scoop`      | Command-line Installer Provisioning Framework                           | `config_provider` | [Details](./scoop.md)     |
-| `Miniconda`  | Python/R Package and Environment Manager                                | `config_provider` | [Details](./miniconda.md) |
-| `Sdkman`     | Software Development Kit Manager for Java Ecosystem                     | `config_provider` | [Details](./sdkman.md)    |
-| `7-Zip`      | High-Ratio File Archiver and Compression Tool                           | `config_provider` | [Details](./7-zip.md)     |
-| `Syncthing`  | Continuous File Synchronization Framework                               | `config_provider` | [Details](./syncthing.md) |
-
+| `7-zip`      | High-Ratio File Archiver and Compression Tool                           | `config_provider` | [Details](./7-zip.md)     |
 
 ### Editors And Knowledge Tools
 
