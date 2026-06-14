@@ -1,6 +1,7 @@
 name: greenshot
-description: Configuration provider plugin for Greenshot screen capture utility.
-type: config_provider
+version: 1.0.0
+type: python
+main: src/plugin.py
 capabilities:
   - config_provider
 settings_schema:
