@@ -1,6 +1,11 @@
 import os
+import sys
 import unittest
-from ..src.plugin import GreenshotPlugin
+
+# 🧠 THE ROUTING FIX: Injects the proper absolute plugin source folder mappings into the runtime execution tree
+sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), "../src")))
+
+from plugin import GreenshotPlugin
 
 
 class TestGreenshotPlugin(unittest.TestCase):
