@@ -1,7 +1,6 @@
 import os
 import unittest
-from configparser import ConfigParser
-from plugins.greenshot.src.plugin import GreenshotPlugin
+from ..src.plugin import GreenshotPlugin
 
 
 class TestGreenshotPlugin(unittest.TestCase):
@@ -15,12 +14,12 @@ class TestGreenshotPlugin(unittest.TestCase):
                 "Capture\\CaptureMode": "Region",
                 "Capture\\CaptureMousepointer": True,
                 "Destination\\CopyToClipboard": True,
-                "General\\Language": "en-US"
-            }
+                "General\\Language": "en-US",
+            },
         }
         plugin = GreenshotPlugin(args)
         result = plugin.apply()
-        
+
         self.assertEqual(result["requestId"], "test-req-293")
         self.assertTrue(result["dryRun"])
 
