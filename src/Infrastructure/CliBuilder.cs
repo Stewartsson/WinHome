@@ -75,7 +75,7 @@ public static class CliBuilder
     var continueOnErrorOption = new Option<bool>("--continue-on-error") { Description = "Continue applying remaining steps when a step fails" };
     continueOnErrorOption.DefaultValueFactory = _ => false;
 
-    // 🧠 MOUNT LOG FILE TRACKER OPTION: Adds the global string flag mapping requested under issue tasks
+    // MOUNT LOG FILE TRACKER OPTION: Adds the global string flag mapping requested under issue tasks
     var logFileOption = new Option<string?>("--log-file");
     logFileOption.Description = "Explicit file path mapping destination to save human-readable persistent runtime log outputs";
     logFileOption.DefaultValueFactory = _ => null;
@@ -202,13 +202,21 @@ public static class CliBuilder
       bool quiet = result.GetValue(quietOption);
       int conflict = RejectConflictingFlags(verbose, quiet);
       if (conflict != 0) return conflict;
+
+      Console.Write("Are you sure you want to clear the state? [y/N]: ");
+      var response = Console.ReadLine();
+      if (response != "y")
+      {
+        return 0;
+      }
+
       return await stateAction("clear", null, ComputeLogLevel(quiet, verbose));
     });
 
-    stateCommand.Add(listSubCommand);
-    stateCommand.Add(backupSubCommand);
-    stateCommand.Add(restoreSubCommand);
-    stateCommand.Add(clearSubCommand);
+    stateCommand.Subcommands.Add(listSubCommand);
+    stateCommand.Subcommands.Add(backupSubCommand);
+    stateCommand.Subcommands.Add(restoreSubCommand);
+    stateCommand.Subcommands.Add(clearSubCommand);
     rootCommand.Add(stateCommand);
 
 
