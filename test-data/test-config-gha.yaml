@@ -2,6 +2,8 @@ version: "1.0"
 apps:
   - id: 7zip.7zip
     manager: winget
+  - id: neovim
+    manager: chocolatey
 envVars:
   - variable: "WINHOME_TEST_GHA"
     value: "true"
@@ -19,3 +21,21 @@ systemSettings:
 git:
   userName: "WinHome GHA"
   userEmail: "gha@winhome.local"
+extensions:
+  starship:
+    settings:
+      add_newline: false
+  bat:
+    settings:
+      theme: "TwoDark"
+  fzf:
+    settings:
+      default_options: "--height 40% --layout=reverse"
+  ripgrep:
+    settings:
+      max_columns: 150
+  zoxide:
+    settings:
+      cmd: "z"
+
+

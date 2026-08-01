@@ -1,3 +1,9 @@
+# /// script
+# dependencies = [
+#   "pyyaml",
+# ]
+# ///
+
 import json
 import os
 import shutil
@@ -42,14 +48,19 @@ def write_yaml(file_path: str, data: dict) -> None:
     os.makedirs(os.path.dirname(file_path), exist_ok=True)
 
     fd, temp_path = tempfile.mkstemp(dir=os.path.dirname(file_path), prefix="chezmoi.yaml.")
+    os.close(fd)
     try:
         import yaml
 
-        with os.fdopen(fd, "w", encoding="utf-8") as f:
+        with open(temp_path, "w", encoding="utf-8") as f:
             yaml.safe_dump(data, f, default_flow_style=False, sort_keys=False)
         os.replace(temp_path, file_path)
     except Exception:
-        os.unlink(temp_path)
+        if os.path.exists(temp_path):
+            try:
+                os.unlink(temp_path)
+            except Exception:
+                pass
         raise
 
 
@@ -63,7 +74,11 @@ def merge_settings(target: dict, source: dict) -> bool:
             if merge_settings(target[key], value):
                 changed = True
         else:
-            if key not in target or target[key] != value:
+            if value == "":
+                if key in target:
+                    del target[key]
+                    changed = True
+            elif key not in target or target[key] != value:
                 target[key] = value
                 changed = True
     return changed

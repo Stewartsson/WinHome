@@ -1,3 +1,4 @@
+using WinHome.Infrastructure.Helpers;
 using WinHome.Interfaces;
 using WinHome.Models;
 using WinHome.Services.Logging;
@@ -32,11 +33,14 @@ public class AppRunner
   /// <param name="json">If <c>true</c>, outputs results as JSON.</param>
   /// <param name="force">If <c>true</c>, reapplies steps even if previously succeeded.</param>
   /// <param name="continueOnError">If <c>true</c>, continues applying remaining steps on failure.</param>
+  /// <param name="autoInstallApps">If <c>true</c>, automatically installs missing plugin prerequisite applications.</param>
   /// <returns>Exit code (0 for success).</returns>
-  public async Task<int> RunAsync(FileInfo configFile, bool dryRun, string? profile, bool debug, bool diff, bool json, bool force = false, bool continueOnError = false)
+  public async Task<int> RunAsync(FileInfo configFile, bool dryRun, string? profile, bool debug, bool diff, bool json, bool force = false, bool continueOnError = false, bool autoInstallApps = false)
   {
     try
     {
+      AdminGuard.EnsureAdministrator();
+
       if (!configFile.Exists)
       {
         _logger.LogError($"[Error] Configuration file not found: {configFile.FullName}");
@@ -63,7 +67,7 @@ public class AppRunner
       // Resolve Secrets
       _secretResolver.ResolveObject(config);
 
-      await _engine.RunAsync(config, dryRun, profile, debug, diff, force, continueOnError);
+      await _engine.RunAsync(config, dryRun, profile, debug, diff, force, continueOnError, autoInstallApps);
       return 0;
     }
     catch (Exception ex)

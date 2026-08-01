@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using System.Net.Http;
 using WinHome.Interfaces;
 using WinHome.Models;
 using WinHome.Services;
@@ -23,6 +24,8 @@ namespace WinHome
     private readonly IStateService _stateService;
     private readonly IRuntimeResolver _runtimeResolver;
     private readonly StateWriter _stateWriter;
+    private static readonly HttpClient _httpClient = new HttpClient { Timeout = TimeSpan.FromSeconds(3) };
+    private static readonly Uri ConnectivityCheckUri = new("http://www.msftconnecttest.com/connecttest.txt");
 
     /// <summary>Initializes a new instance of <see cref="Engine"/> with all required service dependencies.</summary>
     public Engine(
@@ -88,9 +91,20 @@ namespace WinHome
     /// <param name="diff">If <c>true</c>, shows a diff of changes and returns without applying.</param>
     /// <param name="forceReapply">If <c>true</c>, reapplies steps even if previously succeeded.</param>
     /// <param name="continueOnError">If <c>true</c>, continues with remaining steps when a step fails.</param>
-    public async Task RunAsync(Configuration config, bool dryRun, string? profileName = null, bool debug = false, bool diff = false, bool forceReapply = false, bool continueOnError = false)
+    /// <param name="autoInstallApps">If <c>true</c>, automatically installs missing plugin prerequisite applications.</param>
+    public async Task RunAsync(Configuration config, bool dryRun, string? profileName = null, bool debug = false, bool diff = false, bool forceReapply = false, bool continueOnError = false, bool autoInstallApps = false)
     {
       _logger.LogInfo($"--- WinHome v{config.Version} ---");
+
+      // Ensure all configured plugins are downloaded/available locally
+      var configuredPluginNames = config.Apps.Select(a => a.Manager)
+          .Concat(new[] { "vim", "vscode", "obsidian", "ohmyposh" }.Where(_ => config.Vim != null || config.Vscode != null || config.Obsidian != null || config.Ohmyposh != null))
+          .Concat(config.Extensions.Keys)
+          .Where(name => !string.IsNullOrEmpty(name))
+          .Distinct(StringComparer.OrdinalIgnoreCase)
+          .ToList();
+
+      await _pluginManager.EnsurePluginsInstalledAsync(configuredPluginNames);
 
       // Load Plugins
       var plugins = _pluginManager.DiscoverPlugins().ToList();
@@ -412,6 +426,116 @@ namespace WinHome
             }
 
             await _pluginManager.EnsureRuntimeAsync(plugin);
+
+            bool isInstalled = true;
+            if (autoInstallApps)
+            {
+              try
+              {
+                var checkResult = await _pluginRunner.ExecuteAsync(plugin, "check_installed", new { packageId = pluginName }, new { dryRun = dryRun });
+                if (checkResult.Success)
+                {
+                  if (checkResult.Installed.HasValue)
+                  {
+                    isInstalled = checkResult.Installed.Value;
+                  }
+                  else if (checkResult.Data is bool installedBool)
+                  {
+                    isInstalled = installedBool;
+                  }
+                  else if (checkResult.Data is System.Text.Json.JsonElement element)
+                  {
+                    if (element.ValueKind == System.Text.Json.JsonValueKind.True)
+                    {
+                      isInstalled = true;
+                    }
+                    else if (element.ValueKind == System.Text.Json.JsonValueKind.False)
+                    {
+                      isInstalled = false;
+                    }
+                    else if (element.ValueKind == System.Text.Json.JsonValueKind.Object)
+                    {
+                      if (element.TryGetProperty("installed", out var installedProp))
+                      {
+                        if (installedProp.ValueKind == System.Text.Json.JsonValueKind.True)
+                        {
+                          isInstalled = true;
+                        }
+                        else if (installedProp.ValueKind == System.Text.Json.JsonValueKind.False)
+                        {
+                          isInstalled = false;
+                        }
+                      }
+                    }
+                  }
+                }
+              }
+              catch (Exception checkEx)
+              {
+                _logger.LogWarning($"[Plugin] Failed to check installation status for '{pluginName}': {checkEx.Message}");
+              }
+
+              if (!isInstalled && plugin.InstallInfo != null)
+              {
+                string? selectedMgrName = null;
+                string? packageId = null;
+                IPackageManager? selectedMgr = null;
+
+                var managersToTry = new global::System.Collections.Generic.List<string>();
+                if (!string.IsNullOrEmpty(plugin.InstallInfo.DefaultManager))
+                {
+                  managersToTry.Add(plugin.InstallInfo.DefaultManager);
+                }
+                foreach (var mgrKey in plugin.InstallInfo.Packages.Keys)
+                {
+                  if (!managersToTry.Contains(mgrKey))
+                  {
+                    managersToTry.Add(mgrKey);
+                  }
+                }
+
+                foreach (var mgrName in managersToTry)
+                {
+                  if (_managers.TryGetValue(mgrName, out var mgr))
+                  {
+                    if (!mgr.IsAvailable())
+                    {
+                      _logger.LogInfo($"[Engine] Manager '{mgrName}' not available. Attempting to bootstrap...");
+                      try
+                      {
+                        mgr.Bootstrapper.Install(dryRun);
+                      }
+                      catch (Exception bootEx)
+                      {
+                        _logger.LogWarning($"[Engine] Failed to bootstrap '{mgrName}': {bootEx.Message}");
+                      }
+                    }
+
+                    if (mgr.IsAvailable())
+                    {
+                      selectedMgrName = mgrName;
+                      selectedMgr = mgr;
+                      packageId = plugin.InstallInfo.Packages[mgrName];
+                      break;
+                    }
+                  }
+                }
+
+                if (selectedMgr != null && !string.IsNullOrEmpty(selectedMgrName) && !string.IsNullOrEmpty(packageId))
+                {
+                  _logger.LogInfo($"[Plugin] Prerequisite app for '{pluginName}' is not installed. Attempting auto-installation using manager '{selectedMgrName}' (Package: '{packageId}')...");
+                  var appConfig = new AppConfig { Id = packageId, Manager = selectedMgrName };
+                  selectedMgr.Install(appConfig, dryRun);
+                  _logger.LogSuccess($"[Plugin] Prerequisite app '{packageId}' installed successfully.");
+                  _env.RefreshPath();
+                }
+                else
+                {
+                  _logger.LogError($"[Error] Could not install prerequisite app for '{pluginName}': No supported and available package manager found.");
+                }
+              }
+            }
+
             _logger.LogInfo($"[Plugin] Applying configuration for '{pluginName}'...");
             var result = await _pluginRunner.ExecuteAsync(plugin, "apply", pluginConfig, new { dryRun = dryRun });
 
@@ -718,15 +842,19 @@ namespace WinHome
       {
         try
         {
-          using var ping = new System.Net.NetworkInformation.Ping();
-          var reply = ping.Send("1.1.1.1", 2000);
-          if (reply.Status == System.Net.NetworkInformation.IPStatus.Success)
+          using var response = await _httpClient.GetAsync(
+              ConnectivityCheckUri,
+              HttpCompletionOption.ResponseHeadersRead,
+              cancellationToken);
+
+          if (response.IsSuccessStatusCode)
           {
             _logger.LogSuccess("[Engine] Internet connection verified.");
             return true;
           }
         }
-        catch (Exception) { /* Ping failed - will retry */ }
+        catch (HttpRequestException) { /* Request failed - will retry */ }
+        catch (OperationCanceledException) when (!cancellationToken.IsCancellationRequested) { /* HttpClient timeout - will retry */ }
 
         _logger.LogInfo("[Engine] Waiting for network...");
         await Task.Delay(2000, cancellationToken);

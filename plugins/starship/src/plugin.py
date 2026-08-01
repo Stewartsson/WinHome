@@ -93,7 +93,11 @@ def merge_settings(target: dict, source: dict) -> bool:
             if merge_settings(target[key], value):
                 changed = True
         else:
-            if key not in target or target[key] != value:
+            if value == "":
+                if key in target:
+                    del target[key]
+                    changed = True
+            elif key not in target or target[key] != value:
                 target[key] = value
                 changed = True
     return changed
@@ -111,7 +115,9 @@ def check_installed(args: dict, request_id: str) -> dict:
 
 def apply_config(args: dict, context: dict, request_id: str) -> dict:
     dry_run = context.get("dryRun", False)
-    settings = args
+    settings = args.get("settings") if isinstance(args, dict) and "settings" in args else args
+    if settings is None:
+        settings = {}
 
     try:
         config_path = get_config_path()

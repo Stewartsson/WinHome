@@ -45,4 +45,21 @@ Assert-True ($hideFileExt -eq 0), "Show file extensions should be enabled (HideF
 $gitName = git config --global user.name
 Assert-True ($gitName -eq "WinHome GHA"), "Git user name should be set"
 
+# 7. Check for starship config (plugin auto-download and configuration)
+$starshipPath = Join-Path $env:USERPROFILE ".config\starship.toml"
+Assert-True (Test-Path $starshipPath), "Starship configuration file should be created"
+if (Test-Path $starshipPath) {
+    $starshipContent = Get-Content -Path $starshipPath -Raw
+    Assert-True ($starshipContent -match "add_newline = false"), "Starship configuration should have add_newline = false"
+}
+
+# 8. Verify Scoop applications were auto-installed by WinHome
+Assert-True (Test-Path "C:\scoop\apps\bat"), "bat app directory should exist under Scoop"
+Assert-True (Test-Path "C:\scoop\apps\fzf"), "fzf app directory should exist under Scoop"
+Assert-True (Test-Path "C:\scoop\apps\ripgrep"), "ripgrep app directory should exist under Scoop"
+Assert-True (Test-Path "C:\scoop\apps\zoxide"), "zoxide app directory should exist under Scoop"
+
+# 9. Verify Chocolatey applications were auto-installed by WinHome
+Assert-True (Test-Path "C:\ProgramData\chocolatey\lib\neovim"), "Neovim app directory should exist under Chocolatey"
+
 exit $global:exitCode

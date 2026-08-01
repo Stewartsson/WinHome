@@ -1,6 +1,10 @@
 import json
 import sys
-import winreg
+
+try:
+    import winreg
+except ImportError:
+    winreg = None
 
 REG_PATH = r"Software\Microsoft\Windows\CurrentVersion\Explorer\Advanced"
 
@@ -103,7 +107,10 @@ def main():
     try:
         request = json.loads(input_data)
     except Exception as e:
-        response = {"requestId": "unknown", "error": f"Failed to parse JSON request: {e}"}
+        response = {
+            "requestId": "unknown",
+            "error": f"Failed to parse JSON request: {e}",
+        }
         sys.stdout.write(json.dumps(response) + "\n")
         sys.stdout.flush()
         return
